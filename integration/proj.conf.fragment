@@ -1,0 +1,34 @@
+# Add these lines to the SDK project's project/proj.conf.
+#
+# PocketJS owns EPIC and the LCD device, so the SDK's drv_epic and LVGL's
+# framebuffer path must stay out of the firmware.
+CONFIG_POCKETJS=y
+# The reference project links a prebuilt archive from POCKET_RUNTIME_ARCHIVE.
+# CONFIG_POCKETJS_RUST_FROM_SOURCE is not set
+CONFIG_POCKETJS_HEAP_KB=6656
+CONFIG_POCKETJS_EPIC=y
+CONFIG_POCKETJS_EPIC_MASK_TILE_KB=16
+CONFIG_POCKETJS_EPIC_CPU_TILE_KB=16
+CONFIG_POCKETJS_EPIC_MIN_PIXELS=256
+CONFIG_POCKETJS_DISPLAY=y
+CONFIG_POCKETJS_INPUT_TOUCH=y
+CONFIG_POCKETJS_INPUT_KEYS=y
+CONFIG_POCKETJS_GUEST_QUICKJS=y
+CONFIG_POCKETJS_QUICKJS_BELLARD=y
+CONFIG_POCKETJS_RUNNER=y
+
+# The program vendors QuickJS 2025-09-13 under quickjs/. The SDK's 2021
+# package cannot parse ??= / ||= that the PocketJS compiler emits.
+# CONFIG_PKG_USING_QUICKJS is not set
+
+# SF32LB52: PocketJS must own EPIC_IRQHandler.
+# CONFIG_BSP_USING_EPIC is not set
+# LVGL's framebuffer thread also owns the "lcd" device.
+# CONFIG_PKG_USING_LITTLEVGL2RTT is not set
+
+CONFIG_RT_USING_MEMHEAP=y
+CONFIG_RT_USING_PIN=y
+CONFIG_RT_USING_SEMAPHORE=y
+CONFIG_RT_USING_MUTEX=y
+CONFIG_RT_USING_DFS=y
+CONFIG_RT_MAIN_THREAD_STACK_SIZE=163840

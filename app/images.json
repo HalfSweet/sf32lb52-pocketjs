@@ -1,0 +1,8 @@
+{
+  "rings-hour.png": { "linear": true },
+  "rings-minute.png": { "linear": true },
+  "rings-second.png": { "linear": true },
+  "hand-hour.png": { "linear": true },
+  "hand-minute.png": { "linear": true },
+  "hand-second.png": { "linear": true }
+}

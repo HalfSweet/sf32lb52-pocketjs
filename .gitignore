@@ -1,0 +1,8 @@
+# local firmware build output
+project/build_*/
+*.o
+*.d
+*.elf
+*.map
+*.asm
+project/.sconsign.dblite

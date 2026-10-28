@@ -1,0 +1,30 @@
+{
+  "$schema": "https://pocketjs.dev/schema/pocket-2.json",
+  "pocket": 2,
+  "id": "dev.pocket-nexus.sf32lb52-watch",
+  "name": "sf32lb52-watch",
+  "title": "SF32LB52 Aurora Watch",
+  "version": "0.1.0",
+  "engine": {
+    "capabilities": {
+      "requires": [
+        "input.touch",
+        "text.glyphs.baked"
+      ]
+    }
+  },
+  "app": {
+    "entry": "programs/sifli/sf32lb52-osptek/app/watch.tsx",
+    "output": "sf32lb52-watch",
+    "framework": "solid",
+    "viewport": {
+      "fixed": {
+        "logical": [
+          466,
+          466
+        ],
+        "presentation": "native"
+      }
+    }
+  }
+}

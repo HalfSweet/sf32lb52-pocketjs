@@ -1,0 +1,6 @@
+# Add this to the SDK project's project/SConstruct, after `SifliEnv()`.
+# GCC 14 reports some Bellard QuickJS pointer conversions as errors; the
+# SDK already exports WERROR=True, so relax only this warning in the project.
+rtconfig.CFLAGS += ' -Wno-error=incompatible-pointer-types'
+if hasattr(rtconfig, 'CCFLAGS'):
+    rtconfig.CCFLAGS += ' -Wno-error=incompatible-pointer-types'

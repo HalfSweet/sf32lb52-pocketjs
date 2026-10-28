@@ -1,0 +1,17 @@
+import os
+
+from building import *
+
+cwd = GetCurrentDir()
+src = ['main.c']
+CPPPATH = [cwd]
+
+group = DefineGroup('PocketApp', src, depend=['POCKETJS'], CPPPATH=CPPPATH)
+
+# The application includes pocket_profile.h. Make a profile re-export rebuild
+# main.o instead of silently keeping the previous profile hash in the image.
+profile = os.environ.get('POCKET_PROFILE_EXPORT_DIR', '')
+if profile:
+    Depends(group, os.path.join(os.path.abspath(profile), 'pocket_profile.h'))
+
+Return('group')

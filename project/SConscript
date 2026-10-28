@@ -1,0 +1,45 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+objs = []
+
+# SiFli SDK
+Import('SIFLI_SDK')
+objs.extend(SConscript(os.path.join(SIFLI_SDK, 'SConscript'),
+                       variant_dir="sifli_sdk", duplicate=0))
+
+# PocketJS application main
+objs.extend(SConscript(os.path.join(cwd, '..', 'src', 'SConscript'),
+                       variant_dir="src", duplicate=0))
+
+# QuickJS 2025 from the program tree. The SDK's 2021 package is disabled in
+# proj.conf; its parser predates the logical-assignment syntax the PocketJS
+# compiler emits (??=, ||=).
+quickjs_dir = os.path.abspath(os.path.join(cwd, '..', 'quickjs'))
+GetCurrentEnv().AppendUnique(CPPPATH=[quickjs_dir])
+quickjs_src = [os.path.join(quickjs_dir, name) for name in (
+    'quickjs.c', 'dtoa.c', 'libregexp.c', 'libunicode.c', 'cutils.c')]
+# QuickJS is the boot bottleneck on 52x. The SDK's global -Oz favours size;
+# -O2 here roughly halves the interpreter's eval time and still fits in ROM.
+objs.extend(DefineGroup('PocketJS QuickJS', quickjs_src,
+                        depend=['POCKETJS_GUEST_QUICKJS'],
+                        CPPPATH=[quickjs_dir],
+                        LOCAL_CCFLAGS=(' -O2 -D_GNU_SOURCE'
+                                       ' -DPOCKETJS_NO_ATOMICS'
+                                       ' -DCONFIG_VERSION=\\"2025-09-13\\"'
+                                       ' -fno-strict-aliasing -Wno-error')))
+
+# PocketJS platform (drivers, EPIC executor, renderer, guest, runner)
+objs.extend(SConscript(os.path.join(os.environ['POCKETJS_ROOT'], 'platforms', 'sifli',
+                                    'SConscript'),
+                       variant_dir='pocketjs', duplicate=0))
+
+# Embed the compiled package and native texture table in .rodata.
+Import('PocketjsEmbed')
+pocket_build = os.path.abspath(os.environ.get(
+    'POCKET_BUILD', os.path.join(cwd, '..', '..', 'pocket-build')))
+objs.extend(PocketjsEmbed('app', os.path.join(pocket_build, 'app.pocket')))
+objs.extend(PocketjsEmbed('epic', os.path.join(pocket_build, 'app.epic')))
+
+Return('objs')

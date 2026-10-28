@@ -1,0 +1,29 @@
+# Add these lines to the SDK project's project/SConscript, after the SDK and
+# the application sources. POCKETJS_ROOT must be exported in the build shell.
+import os
+from building import *
+
+# The program vendors QuickJS 2025; the SDK's 2021 package is disabled.
+quickjs_dir = os.path.abspath(os.path.join(GetCurrentDir(), '..', 'quickjs'))
+GetCurrentEnv().AppendUnique(CPPPATH=[quickjs_dir])
+objs.extend(DefineGroup('PocketJS QuickJS',
+                        [os.path.join(quickjs_dir, name) for name in (
+                            'quickjs.c', 'dtoa.c', 'libregexp.c', 'libunicode.c', 'cutils.c')],
+                        depend=['POCKETJS_GUEST_QUICKJS'],
+                        CPPPATH=[quickjs_dir],
+                        LOCAL_CCFLAGS=(' -D_GNU_SOURCE'
+                                       ' -DPOCKETJS_NO_ATOMICS'
+                                       ' -DCONFIG_VERSION=\\"2025-09-13\\"'
+                                       ' -fno-strict-aliasing -Wno-error')))
+
+objs.extend(SConscript(os.path.join(os.environ['POCKETJS_ROOT'], 'platforms', 'sifli',
+                                    'SConscript'),
+                       variant_dir='pocketjs', duplicate=0))
+
+# POCKET_BUILD names the directory holding app.pocket and app.epic. Set it in
+# the build shell, or keep the default <project>/../../pocket-build.
+Import('PocketjsEmbed')
+pocket_build = os.path.abspath(os.environ.get(
+    'POCKET_BUILD', os.path.join(GetCurrentDir(), '..', '..', 'pocket-build')))
+objs.extend(PocketjsEmbed('app', os.path.join(pocket_build, 'app.pocket')))
+objs.extend(PocketjsEmbed('epic', os.path.join(pocket_build, 'app.epic')))
