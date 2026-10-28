@@ -5,6 +5,25 @@ This directory is the missing **program composition** for
 firmware image: you still need a SiFli SDK project, a profile, an application
 package, and a `main` that wires the drivers together.
 
+## Code-drawn outer dial
+
+The code-drawn outer dial in `app/second-dial.tsx` replaces `rings-second.png`
+with 60 retained rectangle nodes and 12 text labels. Geometry is computed at
+mount; clock updates still change the hands. The outer dial is centered at
+(233, 233), and labels use the project's baked font rather than the PNG's
+lettering. Normal and locked layouts were checked with the shared software
+renderer. The outer PNG is no longer included in the application package.
+On the 525, **2,260 frames over 75.240 seconds averaged 30.04 FPS**, with
+**14.67 ms renderer time** and **7.47 ms guest time**, zero errors and zero
+EPIC rejections. This uses the existing 30 Hz schedule and mock display;
+it does not measure LCD transfer. Package/native texture sizes fell to
+875,688/540,864 bytes. **Boot increased from about 12.6 to 36.4 seconds**
+with the added scene nodes, so initialization remains an optimization target.
+The RTC-driven performance captures are not paired at identical hand angles.
+These measurements use PocketJS `25099a73` from
+[pocket-nexus/pocketjs#627](https://github.com/pocket-nexus/pocketjs/pull/627)
+and SiFli-SDK `5fb28c60`, with the local headless validation harness.
+
 ## What runs on the board
 
 ```

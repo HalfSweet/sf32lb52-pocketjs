@@ -4,6 +4,7 @@ import { jump } from "@pocketjs/framework/animation";
 import { onFrame } from "@pocketjs/framework/lifecycle";
 import { mount } from "@pocketjs/framework/solid";
 import { createSignal } from "solid-js";
+import { SecondDial } from "./second-dial";
 
 // Aurora lock watch face, ported from the canvas prototype.
 // Canvas coordinates are 466x466; the lock animation rotates the three dials
@@ -119,7 +120,7 @@ function WatchFace() {
             ) : d.key === "m" ? (
               <Image src="rings-minute.png" style={{ insetL: CX - d.imgSize / 2, insetT: CY - d.imgSize / 2, width: d.imgSize, height: d.imgSize }} />
             ) : (
-              <Image src="rings-second.png" style={{ insetL: CX - d.imgSize / 2, insetT: CY - d.imgSize / 2, width: d.imgSize, height: d.imgSize }} />
+              <SecondDial />
             )}
           </View>
         ))}
